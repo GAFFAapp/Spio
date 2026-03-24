@@ -1,5 +1,6 @@
 {
-  "appId": "com.gaffa.spio",
-  "appName": "Spio",
-  "webDir": "www"
+  "appId": "com.gaffa.scorpio",
+  "appName": "Scorpio",
+  "webDir": "www",
+  "bundledWebRuntime": false
 }
