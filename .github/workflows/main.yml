@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -16,14 +17,19 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
       - name: Build with Gradle
         run: |
           cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          # تنظيف أي إعدادات قديمة مسببة للتعارض
+          ./gradlew clean 
+          # بناء الـ APK مع تجاهل التحذيرات التي رأيناها في الصورة
+          ./gradlew assembleDebug --no-daemon -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Spio-APK-File
-          path: "android/app/build/outputs/apk/debug/*.apk"
+          path: android/app/build/outputs/apk/debug/*.apk
