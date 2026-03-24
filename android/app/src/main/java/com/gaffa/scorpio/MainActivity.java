@@ -1,4 +1,4 @@
-package com.gaffa.spio;
+package com.gaffa.scorpio;
 
 import com.getcapacitor.BridgeActivity;
 
