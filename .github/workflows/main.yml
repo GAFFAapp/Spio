@@ -17,15 +17,19 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Create missing Gradle files
+        run: |
+          cd android
+          mkdir -p capacitor-cordova-android-plugins
+          touch capacitor-cordova-android-plugins/cordova.variables.gradle
+          echo "ext { }" > capacitor-cordova-android-plugins/cordova.variables.gradle
+
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
 
       - name: Build with Gradle
         run: |
           cd android
-          # تنظيف أي إعدادات قديمة مسببة للتعارض
-          ./gradlew clean 
-          # بناء الـ APK مع تجاهل التحذيرات التي رأيناها في الصورة
           ./gradlew assembleDebug --no-daemon -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
 
       - name: Upload APK
