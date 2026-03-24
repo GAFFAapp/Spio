@@ -16,11 +16,15 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Build with Gradle
+            - name: Build with Gradle
         run: |
           cd android
+          # تحديث ملفات التشغيل لتجنب تعارض النسخ
+          ./gradlew wrapper --gradle-version 8.5
           chmod +x gradlew
-          ./gradlew assembleDebug
+          # البناء مع تجاهل التحذيرات غير الضرورية
+          ./gradlew assembleDebug --no-daemon
+          
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
