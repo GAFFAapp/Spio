@@ -17,21 +17,25 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Repair Android Project
+      - name: Deep Clean and Repair Project
         run: |
           cd android
-          # حذف ملفات الإعدادات التي قد تسبب تعارضاً
-          rm -rf .gradle
-          # إنشاء ملف المتغيرات لـ Cordova لضمان عدم توقف البناء
+          # حذف كل المجلدات المؤقتة والملفات التي قد تسبب تعارض
+          rm -rf .gradle build app/build
+          # إنشاء ملف Cordova المفقود الذي اشتكى منه النظام سابقاً
           mkdir -p capacitor-cordova-android-plugins
           echo "ext { }" > capacitor-cordova-android-plugins/cordova.variables.gradle
-          # إعطاء صلاحية التنفيذ لملف gradlew
+          # التأكد من أن ملف الإعدادات الأساسي موجود
+          if [ ! -f "settings.gradle" ]; then
+            echo "include ':app'" > settings.gradle
+          fi
           chmod +x gradlew
 
-      - name: Build APK with Force Options
+      - name: Force Build APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true --stacktrace
+          # استخدام خيار --no-build-cache لضمان بناء جديد كلياً
+          ./gradlew assembleDebug --no-daemon --no-build-cache -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
